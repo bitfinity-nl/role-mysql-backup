@@ -1,2 +1,2 @@
-# role-mysql-backup
+# sys-mysql-backup
 Playbook for backup all MySQL databases
