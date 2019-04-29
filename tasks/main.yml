@@ -62,4 +62,15 @@
   - name: "Generate log file"
     shell: "ls {{ db_dest }} > /tmp/backup_db.log"
   
-#  - name: "send "
+  - name: "Send mail"
+    mail:
+      host: "{{ smtp_host }}"
+      port: "{{ smtp_port }}"
+      username: "{{ smtp_username }}"
+      password: "{{ smtp_password }}"
+      to: "{{ smtp_rcpt }}"
+      subject: Ansible-report
+      body: 'System {{ ansible_hostname }} has been successfully provisioned.'
+      attach: /tmp/backup_db.log
+    when:
+      - smtp_state == 'enabled'

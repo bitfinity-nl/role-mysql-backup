@@ -46,3 +46,25 @@
     - "information_schema"
     - "performance_schema"
     - "mysql"
+
+
+  # -- Notification settings --
+  #
+  # Variable(s):
+  #   smtp_state    : 'disabled'                     # Whether notifications are enabled or disabled (default = disabled).
+  #   smtp_host     : 'smtp.gmail.com'               # smtp server
+  #   smtp_port     : '587'                          # Port
+  #   smtp_username : 'username@gmail.com'           # username
+  #   smtp_password : 'mysecret'                     # Password
+  #   smtp_rcpt     : 'support@example.com'          # Add reciptient.
+  #   smtp_subject  : 'Ansible MySQL backup report'  
+  #   smtp_body     : 'support@example.com'
+  #
+  smtp_state    : 'disabled'
+  smtp_host     : 'smtp.gmail.com'
+  smtp_port     : '587'
+  smtp_username : 'username@gmail.com'
+  smtp_password : 'mysecret' 
+  smtp_rcpt     : 'support@example.com'
+  smtp_subject  : 'Ansible MySQL backup report from {{ ansible_hostname }}'
+  smtp_body     : 'Ansible MySQL backup report'
