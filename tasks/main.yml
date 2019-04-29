@@ -33,13 +33,13 @@
       paths: "{{ db_dest }}"
       age: "{{ db_ret }}"
       recurse: yes
-    register: list.backups.to.delete
+    register: list
 
   - name: "Delete DB back-ups that are older than {{ db_ret }}"
     file:
       path: "{{ item.path }}"
       state: absent
-    with_items: "{{ list.backups.to.delete.files }}"
+    with_items: "{{ list.files }}"
 
   - name: "List databases on {{ ansible.host }}"
     shell: 'mysql -u {{ db_user }} -p{{ db_pass }} -e "show databases;"'
