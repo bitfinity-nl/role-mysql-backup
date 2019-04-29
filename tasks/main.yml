@@ -1,0 +1,65 @@
+---
+  # Title: Example playbook for finding files older than x days.
+  #
+  # Author: Luc Rutten
+  # File: tasks/main.yml
+  #
+  # Description:
+  #   Playbook for backup all mysql databases
+  #
+ 
+  - name: "Install packages"
+    apt:
+      name: "{{ packages }}"
+      state: present
+    vars:
+      packages:
+      - python-pip
+
+  - name:  Install PyMySQL python package.
+    pip:
+      name: PyMySQL
+
+  - name: "Check that the backup location {{ db_dest }} exist"
+    file:
+      path: "{{ db_dest }}"
+      state: directory
+      owner: root
+      group: root
+      mode: 0600
+
+  - name: "Find DB back-ups that are older than {{ db_ret }}"
+    find:
+      paths: "{{ db_dest }}"
+      age: "{{ db_ret }}"
+      recurse: yes
+    register: list.backups.to.delete
+
+  - name: "Delete DB back-ups that are older than {{ db_ret }}"
+    file:
+      path: "{{ item.path }}"
+      state: absent
+    with_items: "{{ list.backups.to.delete.files }}"
+
+  - name: "List databases on {{ ansible.host }}"
+    shell: 'mysql -u {{ db_user }} -p{{ db_pass }} -e "show databases;"'
+    register: dblist
+
+  - name: "Create timestamp"
+    set_fact:
+      timestamp: "{{ lookup('pipe','date +%Y%m%d_%H%M%S') }}"
+
+  - name: "Backup database(s)"
+    mysql_db:
+      state: dump
+      name: "{{ item }}"
+      target: "{{ db_dest }}/{{ timestamp }}_{{ item }}.sql.{{ db_compression }}"
+      login_user: "{{ db_user }}"
+      login_password: "{{ db_pass }}"
+    with_items:
+      - "{{ dblist.stdout_lines | difference(db_exclude) }}"
+  
+  - name: "Generate log file"
+    shell: "ls {{ db_dest }} > /tmp/backup_db.log"
+  
+#  - name: "send "

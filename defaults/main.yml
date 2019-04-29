@@ -1,0 +1,48 @@
+---
+  # Title: Example playbook for finding files older than x days.
+  #
+  # Author: Luc Rutten
+  # File: defaults/main.yml
+  #
+  # Description:
+  #   Playbook for learning
+  
+  # -- MySQL administrative account --
+  #
+  # Variable(s)
+  #   db_user : 'root'     # Account with administrative permissions (default = root).
+  #   db_pass : 'password' # Password for the administrative account.
+  #
+  db_user : 'root'
+  db_pass : 'password' 
+
+
+  # -- db retention --
+  #
+  # Variable(s):
+  #   db_ret  : '7d'                # Retention of the back-ups (default = 7d).
+  #   db_dest : '/mnt/backup/mysql' # Path where to store the back-ups (default = /mnt/backup/mysql). 
+  #
+  db_ret  : '7d'
+  db_dest : '/mnt/backup/mysql'
+
+
+  # -- MySQL dump settings --
+  #
+  # Variable(s):
+  #  db_compression : 'gz'          # Select compression type: no compression=sql, gzip=gz, bzip=bz2 (default=gzip).
+  #  db_exlude      :               # Exclude DB's from backup.
+  #    - "Database"
+  #    - "information_schema"
+  #    - "performance_schema"
+  #    - "mysql"
+  #
+  # Note:
+  #   - https://docs.ansible.com/ansible/latest/modules/mysql_db_module.html
+  #
+  db_compression : 'gz'
+  db_exclude     :
+    - "Database"
+    - "information_schema"
+    - "performance_schema"
+    - "mysql"
